@@ -1,7 +1,7 @@
 import { expect }     from 'chai';
 import nock           from'nock'
 import routes         from '../routes.json';
-import BackendService from '../src/BackendService'
+import BackendService from '../src/backend_service'
 
 BackendService.init({
   routes: routes,
