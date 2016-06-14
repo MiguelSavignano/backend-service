@@ -1,4 +1,4 @@
-#BackenService.js
+#BackendService.js
 Generate multiple ajaxs function with name!!
 
 ##Initialize
@@ -36,8 +36,8 @@ BackendService generate path functions like this
 For testing; FavoriteBtn will be to call a ajax function when success the ajax change the css class.
 ```javascript
 it("simulate click and the heart will be red; in this test the ajax call it's a mock", function(){
-  BackendService.reset()
-  BackendService.add_to_favorite.responseWith({ok:true, err:false})
+  MyApi.reset()
+  MyApi.add_to_favorite.responseWith({ok:true, err:false})
   const wrapper = mount(<FavoriteBtn active={false} book={book} />)
   wrapper.find('a').simulate('click');
   expect( wrapper.props().active ).to.equal(true);
