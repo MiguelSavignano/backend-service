@@ -13,6 +13,7 @@ BackendService.build = function(options){
   $options = options
   $routes = routes
   $serverPath = serverPath || ""
+  $routesPath = routesPath
 }
 
 BackendService._generatePathWithParams = (path, params) =>{
@@ -88,9 +89,6 @@ var getRoutes = () => {
   return []
 }
 
-// options
-// routes or routesPath is requiered
-// serverPath
 BackendService.init = function(options={}) {
   var BackendService = this
   BackendService.build(options)
