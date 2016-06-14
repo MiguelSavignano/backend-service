@@ -16,7 +16,9 @@ BackendService.build = function(options){
 }
 
 BackendService._generatePathWithParams = (path, params) =>{
-  return path.replace(/:id/, params.id)
+  var new_path = path.replace(/:id/, params.id)
+  delete params.id
+  return new_path
 }
 
 BackendService._gererateFunctionPath = function(json_route){

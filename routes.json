@@ -1,0 +1,42 @@
+[
+  {
+    "name": "posts",
+    "method": "GET",
+    "path": "/posts"
+  },
+  {
+    "name": "create_posts",
+    "method": "POST",
+    "path": "/posts"
+  },
+  {
+    "name": "new_post",
+    "method": "GET",
+    "path": "/posts/new"
+  },
+  {
+    "name": "edit_post",
+    "method": "GET",
+    "path": "/posts/:id/edit"
+  },
+  {
+    "name": "post",
+    "method": "GET",
+    "path": "/posts/:id"
+  },
+  {
+    "name": "update_posts_patch",
+    "method": "PATCH",
+    "path": "/posts/:id"
+  },
+  {
+    "name": "update_posts",
+    "method": "PUT",
+    "path": "/posts/:id"
+  },
+  {
+    "name": "destroy_posts",
+    "method": "DELETE",
+    "path": "/posts/:id"
+  }
+]
