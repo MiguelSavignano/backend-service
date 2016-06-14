@@ -16,14 +16,20 @@ BackendService.build = function(options){
 }
 
 BackendService._generatePathWithParams = (path, params) =>{
-  var new_path = path.replace(/:id/, params.id)
-  delete params.id
-  return new_path
+  if(!params){ return path }
+  _.keys(params).forEach( (key) => {
+    var regexp_key = new RegExp(`:${key}`)
+    if( regexp_key.test(path) ){
+      path = path.replace(regexp_key, params[key])
+      delete params[key]
+    }
+  })
+  return path
 }
 
 BackendService._gererateFunctionPath = function(json_route){
   const{ name, method, path } = json_route
-  return (params) => /:id/.test(path) ? BackendService._generatePathWithParams(path, params) : path
+  return (params) => BackendService._generatePathWithParams(path, params)
 }
 
 BackendService._generateXhrFunction_ = function(method, path, callback, callbackError, data){

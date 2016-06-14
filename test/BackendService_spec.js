@@ -22,7 +22,7 @@ describe("BackendService generate functions using the routes.json", function() {
       });
     });
 
-    it('.posts', function(done) {
+    it('.posts other params', function(done) {
       mock.get('/posts?other_param=foo').reply(200, [{name:"foo"}])
       BackendService.posts( {other_param:'foo'}, (posts) =>{
         expect(posts[0].name ).to.be.a('string')
@@ -64,4 +64,26 @@ describe("BackendService generate functions using the routes.json", function() {
     });
   })
 
+  describe("._generatePathWithParams match any params in the path with the object", function(){
+    it("id", function() {
+      let params = {id:1}
+      let path = BackendService._generatePathWithParams("/posts/:id",params)
+      expect(path).to.eq('/posts/1')
+      expect(params.id).to.be.an('undefined')
+    });
+
+    it("slug", function() {
+      let params = {slug:"foo"}
+      let path = BackendService._generatePathWithParams("/posts/:slug",params)
+      expect(path).to.eq('/posts/foo')
+      expect(params.slug).to.be.an('undefined')
+    });
+
+    it("multiple params", function() {
+      let params = {other_param:12, slug:"foo"}
+      let path = BackendService._generatePathWithParams("/posts/:slug",params)
+      expect(path).to.eq('/posts/foo')
+      expect(params.other_param).to.eq(12)
+    });
+  })
 });
