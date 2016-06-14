@@ -1,0 +1,29 @@
+{
+  "name": "backend-service",
+  "version": "1.0.0",
+  "description": "Generate multiple ajaxs function with name!!",
+  "main": "BackendService.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MiguelSavignano/backend-service.git"
+  },
+  "keywords": [
+    "ajax",
+    "backend",
+    "generator"
+  ],
+  "author": "Miguel Savignano",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/MiguelSavignano/backend-service/issues"
+  },
+  "homepage": "https://github.com/MiguelSavignano/backend-service#readme",
+  "dependencies": {
+    "lodash": "^4.13.1",
+    "superagent": "^2.0.0",
+    "superagent-rails-csrf": "0.0.2"
+  }
+}
