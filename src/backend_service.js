@@ -61,8 +61,8 @@ BackendService._gererateFunctionRequest = function(json_route){
       var callback = argument2
       var callbackError = argument3
       var query = argument1
-      path = BackendService._generatePathWithParams(path, query)
-      return BackendService._generateXhrFunction_(method, path, callback, callbackError, query)
+      var _path = BackendService._generatePathWithParams(path, query)
+      return BackendService._generateXhrFunction_(method, _path, callback, callbackError, query)
     }
   }
 }

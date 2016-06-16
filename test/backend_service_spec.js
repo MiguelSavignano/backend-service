@@ -49,6 +49,13 @@ describe("BackendService generate functions using the routes.json", function() {
       });
     });
 
+    it(".post url solve issue bad generate the second url", function() {
+      var requested = BackendService.post({id:1})
+      expect(requested.url).to.be.eq('http://localhost:3000/posts/1')
+      var requested = BackendService.post({id:2})
+      expect(requested.url).to.be.eq('http://localhost:3000/posts/2')
+    });
+
   })
 
   describe("Functions paths", function(){

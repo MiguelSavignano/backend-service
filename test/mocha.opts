@@ -1,3 +1,4 @@
 --require test/mocha_helper.js
 --recursive test/
 --reporter nyan
+--timeout 5000
