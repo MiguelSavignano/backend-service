@@ -1,6 +1,6 @@
 {
   "name": "backend-service",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Generate multiple ajaxs function with name!!",
   "main": "BackendService.js",
   "scripts": {
