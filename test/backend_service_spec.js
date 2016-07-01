@@ -10,66 +10,30 @@ BackendService.init({
 
 var mock = nock('http://localhost:3000')
 
-describe("BackendService generate functions using the routes.json", function() {
+describe("BackendService", function() {
 
-  describe("Functions request", function(){
-    it('.posts', function(done) {
-      mock.get('/posts').reply(200, [{name:"foo"}])
-      BackendService.posts( (posts) =>{
-        expect(posts[0].name ).to.be.a('string')
-        expect(posts[0].name ).to.eq('foo')
-        done()
-      });
-    });
+  it("._gererateFunctionPath", function() {
+    var path_fnc = BackendService._gererateFunctionPath({
+      "name": "update_posts",
+      "method": "PUT",
+      "path": "/posts/:id"
+    })
+    expect(path_fnc).to.be.a('function')
+    expect( path_fnc({id:4}) ).to.be.eq('/posts/4')
+  });
 
-    it('.posts other params', function(done) {
-      mock.get('/posts?other_param=foo').reply(200, [{name:"foo"}])
-      BackendService.posts( {other_param:'foo'}, (posts) =>{
-        expect(posts[0].name ).to.be.a('string')
-        expect(posts[0].name ).to.eq('foo')
-        done()
-      });
-    });
-
-    it(".new_post", function(done) {
-      mock.get('/posts/new').reply(200, {name:"foo"})
-      BackendService.new_post( (post) =>{
-        expect(post.name).to.be.a('string')
-        expect(post.name).to.eq('foo')
-        done()
-      });
-    });
-
-    it(".post", function(done) {
-      mock.get('/posts/1').reply(200, {name:"foo"})
-      BackendService.post( {id:1},(post) =>{
-        expect(post.name).to.be.a('string')
-        expect(post.name).to.eq('foo')
-        done()
-      });
-    });
-
-    it(".post url solve issue bad generate the second url", function() {
-      var requested = BackendService.post({id:1})
-      expect(requested.url).to.be.eq('http://localhost:3000/posts/1')
-      var requested = BackendService.post({id:2})
-      expect(requested.url).to.be.eq('http://localhost:3000/posts/2')
-    });
-
-  })
-
-  describe("Functions paths", function(){
-    it(".posts_path", function() {
-      var path = BackendService.posts_path();
-      expect(path).to.be.a('string')
-      expect(path).to.eq('/posts')
-    });
-
-    it(".post_path", function() {
-      var path = BackendService.post_path({id:3});
-      expect(path).to.eq('/posts/3')
-    });
-  })
+  it("._gererateFunctionRequest", function() {
+    var request_fnc = BackendService._gererateFunctionRequest({
+      "name": "update_posts",
+      "method": "PUT",
+      "path": "/posts/:id"
+    })
+    expect(request_fnc).to.be.a('function')
+    expect(request_fnc({id:4}).url).to.eq('http://localhost:3000/posts/4')
+    expect(request_fnc({id:4}).method).to.eq('PUT')
+    expect(request_fnc({id:4}).header['User-Agent']).to.eq('node-superagent/2.0.0')
+    expect(request_fnc({id:4}).header['Accept']).to.eq('application/json')
+  });
 
   describe("._generatePathWithParams match any params in the path with the object", function(){
     it("id", function() {
