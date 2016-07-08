@@ -57,7 +57,7 @@ BackendService._generateXhrFunction_ = function(method, path, callback, callback
 
 BackendService._gererateFunctionRequest = function(json_route){
   var BackendService = this
-  var{ name, method, path } = json_route
+  var{ method, path } = json_route
   return (argument1, argument2, argument3) => {
     if( _.isFunction(argument1) ){
       var callback = argument1
@@ -110,7 +110,14 @@ BackendService.init = function(options={}){
   var BackendService = this
   BackendService.build(options)
   var all_routes = getRoutes()
-  all_routes.forEach( function(json_route){
+  var default_routes_names = [
+    {name:"_get","method": "GET", "path": ""},
+    {name:"_post","method": "POST", "path": ""},
+    {name:"_put","method": "PUT", "path": ""},
+    {name:"_delete","method": "DELETE", "path": ""}
+  ]
+  var _all_routes_ = [...all_routes, ...default_routes_names]
+  _all_routes_.forEach( function(json_route){
     var {name, method, path} = json_route
     BackendService[`${name}_path`] = BackendService._gererateFunctionPath(json_route)
     BackendService[name] = BackendService._gererateFunctionRequest(json_route)

@@ -12,27 +12,84 @@ BackendService.init({
 var mock = nock('http://localhost:3000')
 
 describe("BackendService", function() {
+  describe("._get", function(){
+    it('argument _path combined with params', function(done) {
+      mock.get('/posts/2?location=madrid').reply(200, {name:"foo"})
+      BackendService._get({
+          _path: '/posts/2',
+          location:'madrid'
+        },
+        (posts) => {
+          expect(posts.name).to.eq('foo')
+          done()
+        }
+      )
+    });
+  })
+
+  describe("._post", function(){
+    it('argument _path', function(done) {
+      mock.post('/posts/2').reply(200, {name:"foo"})
+      BackendService._post(
+        {_path: '/posts/2' },
+        (posts) => {
+          expect(posts.name).to.eq('foo')
+          done()
+        }
+      )
+    });
+  })
+
+  describe("._delete", function(){
+    it('argument _path', function(done) {
+      mock.delete('/posts/2').reply(200, {name:"foo"})
+      BackendService._delete(
+        {_path: '/posts/2' },
+        (posts) => {
+          expect(posts.name).to.eq('foo')
+          done()
+        }
+      )
+    });
+  })
+
+  describe("._put", function(){
+    it('argument _path', function(done) {
+      mock.put('/posts/2').reply(200, {name:"foo"})
+      BackendService._put(
+        {_path: '/posts/2' },
+        (posts) => {
+          expect(posts.name).to.eq('foo')
+          done()
+        }
+      )
+    });
+  })
+
   describe("option unauthorizedFnc", function(){
+    var unauthorizedFnc_spy = sinon.spy();
+    BackendService.init({
+      routes: routes,
+      serverPath: "http://localhost:3000",
+      unauthorizedFnc: unauthorizedFnc_spy
+    })
+
     it('called unauthorizedFnc', function(done) {
-      var unauthorizedFnc_spy = sinon.spy();
-      BackendService.init({
-        routes: routes,
-        serverPath: "http://localhost:3000",
-        unauthorizedFnc: unauthorizedFnc_spy
-      })
-      mock.get('/posts').reply(401, {"error":"You need to sign in or sign up before continuing."})
+      var response_body = {"error":"You need to sign in or sign up before continuing."}
+      mock.get('/posts').reply(401, response_body)
       BackendService.posts( (posts) =>{}, (error) => {
-        expect(error.error ).to.eq('You need to sign in or sign up before continuing.')
-        sinon.assert.calledWith(unauthorizedFnc_spy,
-          {"error":"You need to sign in or sign up before continuing."}
+        expect(error.error ).to.eq( response_body.error )
+        sinon.assert.calledWith(
+          unauthorizedFnc_spy,
+          response_body
         );
         done()
       });
     });
   })
 
-  describe("accept path argument string", function(){
-    it('remplace the parh in the rote json and user the string path', function(done) {
+  describe("accept path argument", function(){
+    it('remplace the parh in the rote json', function(done) {
       mock.get('/posts/2').reply(200, {name:"foo"})
       BackendService.post( {_path: '/posts/2' }, (posts) =>{
         expect(posts.name ).to.eq('foo')
@@ -45,23 +102,7 @@ describe("BackendService", function() {
     it('.posts', function(done) {
       mock.get('/posts').reply(200, [{name:"foo"}])
       BackendService.posts( (posts) =>{
-        expect(posts[0].name ).to.be.a('string')
         expect(posts[0].name ).to.eq('foo')
-        done()
-      });
-    });
-
-    it('called callbackError', function(done) {
-      mock.get('/posts').reply(500, {"error":"Server error"})
-      BackendService.posts( (posts) =>{}, (error) => {
-        done()
-      });
-    });
-
-    it('called callbackError not response', function(done) {
-      // mock.get('/posts').reply(500, {"error":"Server error"})
-      BackendService.posts( (posts) =>{}, (error) => {
-        expect(error.msg ).to.eq('BackendService, ajax not response')
         done()
       });
     });
@@ -100,6 +141,20 @@ describe("BackendService", function() {
       expect(requested.url).to.be.eq('http://localhost:3000/posts/2')
     });
 
+    it('called callbackError', function(done) {
+      mock.get('/posts').reply(500, {"error":"Server error"})
+      BackendService.posts( (posts) =>{}, (error) => {
+        done()
+      });
+    });
+
+    it('called callbackError not response', function(done) {
+      // mock.get('/posts').reply(500, {"error":"Server error"})
+      BackendService.posts( (posts) =>{}, (error) => {
+        expect(error.msg ).to.eq('BackendService, ajax not response')
+        done()
+      });
+    });
   })
 
   describe("Functions paths", function(){
