@@ -46,9 +46,11 @@ BackendService._generateXhrFunction_ = function(method, path, callback, callback
     if($serverPath === ""){_request.setCsrfToken()}
   }
   _request.end(function(err, res){
-    if( $unauthorizedFnc && res.status == "401" ){ $unauthorizedFnc(res.body, res, err) }
-    if(err  && callbackError){callbackError(res.body, res.status, res)}
-    if(!err && callback)     {callback(res.body, res.status, res)}
+    if($unauthorizedFnc && (res && res.status) == "401" ){ $unauthorizedFnc(res.body, res, err) }
+    if(err  && callbackError){
+      res ? callbackError( res.body, res.status, res) : callbackError( {msg:"BackendService, ajax not response"}, 0, undefined)
+    }
+    if(!err && callback) {callback(res.body, res.status, res)}
   })
   return _request
 }
@@ -65,7 +67,8 @@ BackendService._gererateFunctionRequest = function(json_route){
       var callback = argument2
       var callbackError = argument3
       var query = argument1
-      var _path = BackendService._generatePathWithParams(path, query)
+      var _path = argument1._path || BackendService._generatePathWithParams(path, query)
+      if(query['_path']) delete query['_path']
       return BackendService._generateXhrFunction_(method, _path, callback, callbackError, query)
     }
   }
@@ -103,13 +106,13 @@ var getRoutes = () => {
   return []
 }
 
-BackendService.init = function(options={}) {
+BackendService.init = function(options={}){
   var BackendService = this
   BackendService.build(options)
   var all_routes = getRoutes()
-  all_routes.forEach( function(json_route) {
+  all_routes.forEach( function(json_route){
     var {name, method, path} = json_route
-    BackendService[`${name}_path`] =  BackendService._gererateFunctionPath(json_route)
+    BackendService[`${name}_path`] = BackendService._gererateFunctionPath(json_route)
     BackendService[name] = BackendService._gererateFunctionRequest(json_route)
     BackendService[name].responseWith = BackendService._gererateFunctionStub_(name)
   })

@@ -11,10 +11,9 @@ BackendService.init({
 
 var mock = nock('http://localhost:3000')
 
-describe("BackendService generate functions using the routes.json", function() {
-
+describe("BackendService", function() {
   describe("option unauthorizedFnc", function(){
-    it('call unauthorizedFnc', function(done) {
+    it('called unauthorizedFnc', function(done) {
       var unauthorizedFnc_spy = sinon.spy();
       BackendService.init({
         routes: routes,
@@ -32,6 +31,16 @@ describe("BackendService generate functions using the routes.json", function() {
     });
   })
 
+  describe("accept path argument string", function(){
+    it('remplace the parh in the rote json and user the string path', function(done) {
+      mock.get('/posts/2').reply(200, {name:"foo"})
+      BackendService.post( {_path: '/posts/2' }, (posts) =>{
+        expect(posts.name ).to.eq('foo')
+        done()
+      })
+    });
+  })
+
   describe("Functions request", function(){
     it('.posts', function(done) {
       mock.get('/posts').reply(200, [{name:"foo"}])
@@ -42,9 +51,17 @@ describe("BackendService generate functions using the routes.json", function() {
       });
     });
 
-    it('call callbackError', function(done) {
+    it('called callbackError', function(done) {
       mock.get('/posts').reply(500, {"error":"Server error"})
       BackendService.posts( (posts) =>{}, (error) => {
+        done()
+      });
+    });
+
+    it('called callbackError not response', function(done) {
+      // mock.get('/posts').reply(500, {"error":"Server error"})
+      BackendService.posts( (posts) =>{}, (error) => {
+        expect(error.msg ).to.eq('BackendService, ajax not response')
         done()
       });
     });

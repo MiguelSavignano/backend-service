@@ -71,9 +71,9 @@ MyApi.init({
 * serverPath: set other server path
 * setCsrfToken: add superagent-rails-csrf for Rails Serve
 
-#Arguments Recive
+##Arguments Recive
 * MyApi.users( query_data, callbackSucess, callBackError )
 * MyApi.create_users( send_data, callbackSuccess, callBackError ) Post|PUT
 
-#Arguments contain
+##Arguments contain
 * callBackSuccess( response.body, response.status, response  )
