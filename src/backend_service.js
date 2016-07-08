@@ -46,7 +46,7 @@ BackendService._generateXhrFunction_ = function(method, path, callback, callback
     if($serverPath === ""){_request.setCsrfToken()}
   }
   _request.end(function(err, res){
-    if( unauthorizedFnc && res.status == "401" ){ $unauthorizedFnc(res.body, res, err) }
+    if( $unauthorizedFnc && res.status == "401" ){ $unauthorizedFnc(res.body, res, err) }
     if(err  && callbackError){callbackError(res.body, res.status, res)}
     if(!err && callback)     {callback(res.body, res.status, res)}
   })

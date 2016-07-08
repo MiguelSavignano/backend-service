@@ -6,8 +6,7 @@ import BackendService from '../src/backend_service'
 
 BackendService.init({
   routes: routes,
-  serverPath: "http://localhost:3000",
-  unauthorizedFnc: function(){ console.log('Hii') }
+  serverPath: "http://localhost:3000"
 })
 
 var mock = nock('http://localhost:3000')
@@ -15,7 +14,7 @@ var mock = nock('http://localhost:3000')
 describe("BackendService generate functions using the routes.json", function() {
 
   describe("option unauthorizedFnc", function(){
-    it.only('call unauthorizedFnc', function(done) {
+    it('call unauthorizedFnc', function(done) {
       var unauthorizedFnc_spy = sinon.spy();
       BackendService.init({
         routes: routes,
@@ -25,7 +24,9 @@ describe("BackendService generate functions using the routes.json", function() {
       mock.get('/posts').reply(401, {"error":"You need to sign in or sign up before continuing."})
       BackendService.posts( (posts) =>{}, (error) => {
         expect(error.error ).to.eq('You need to sign in or sign up before continuing.')
-        sinon.assert.calledOnce(unauthorizedFnc_spy);
+        sinon.assert.calledWith(unauthorizedFnc_spy,
+          {"error":"You need to sign in or sign up before continuing."}
+        );
         done()
       });
     });
