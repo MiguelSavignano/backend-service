@@ -7,13 +7,15 @@ var $serverPath
 var $options
 var $routes
 var $routesPath
+var $unauthorizedFnc
 
 BackendService.build = function(options){
-  const {serverPath, routes, routesPath} = options
+  const {serverPath, routes, routesPath, unauthorizedFnc} = options
   $options = options
   $routes = routes
   $serverPath = serverPath || ""
   $routesPath = routesPath
+  $unauthorizedFnc = unauthorizedFnc || function(){}
 }
 
 BackendService._generatePathWithParams = (path, params) =>{
@@ -56,6 +58,7 @@ BackendService._gererateFunctionRequest = function(json_route){
   return (argument1, argument2, argument3) => {
     if( _.isFunction(argument1) ){
       var callback = argument1
+      var callbackError = argument2
       return BackendService._generateXhrFunction_(method, path, callback, callbackError )
     }else{
       var callback = argument2
@@ -63,6 +66,16 @@ BackendService._gererateFunctionRequest = function(json_route){
       var query = argument1
       var _path = BackendService._generatePathWithParams(path, query)
       return BackendService._generateXhrFunction_(method, _path, callback, callbackError, query)
+    }
+  }
+}
+
+BackendService._gererateFunctionStub_ = function(name){
+  var BackendService = this
+  return (response) =>{
+    BackendService[name] = (argument1, argument2, argument3) => {
+      var callback = _.isFunction(argument1) ? argument1 : argument2
+      return callback(response)
     }
   }
 }

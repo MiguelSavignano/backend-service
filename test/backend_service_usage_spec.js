@@ -1,16 +1,35 @@
 import { expect }     from 'chai';
 import nock           from'nock'
+import sinon           from 'sinon'
 import routes         from '../routes.json';
 import BackendService from '../src/backend_service'
 
 BackendService.init({
   routes: routes,
-  serverPath: "http://localhost:3000"
+  serverPath: "http://localhost:3000",
+  unauthorizedFnc: function(){ console.log('Hii') }
 })
 
 var mock = nock('http://localhost:3000')
 
 describe("BackendService generate functions using the routes.json", function() {
+
+  describe("option unauthorizedFnc", function(){
+    it.only('call unauthorizedFnc', function(done) {
+      var unauthorizedFnc_spy = sinon.spy();
+      BackendService.init({
+        routes: routes,
+        serverPath: "http://localhost:3000",
+        unauthorizedFnc: unauthorizedFnc_spy
+      })
+      mock.get('/posts').reply(401, {"error":"You need to sign in or sign up before continuing."})
+      BackendService.posts( (posts) =>{}, (error) => {
+        expect(error.error ).to.eq('You need to sign in or sign up before continuing.')
+        sinon.assert.calledOnce(unauthorizedFnc_spy);
+        done()
+      });
+    });
+  })
 
   describe("Functions request", function(){
     it('.posts', function(done) {
@@ -18,6 +37,13 @@ describe("BackendService generate functions using the routes.json", function() {
       BackendService.posts( (posts) =>{
         expect(posts[0].name ).to.be.a('string')
         expect(posts[0].name ).to.eq('foo')
+        done()
+      });
+    });
+
+    it('call callbackError', function(done) {
+      mock.get('/posts').reply(500, {"error":"Server error"})
+      BackendService.posts( (posts) =>{}, (error) => {
         done()
       });
     });
