@@ -53,6 +53,15 @@ it("when click the heart will be red; in this test the ajax call it's a mock", f
 ```
 You don't need to change your production code, BackendService call the same callbackSucess but call immediately and the response it's a mock.
 
+##Default functions
+_get, _post, _delete, _put
+```javascript
+  MyApi._get(
+    {path:"/users", location:"madrid"},
+    (users) => console.log(users)
+  )
+  //GET /users?location=madrid
+```
 ##Unauthorized function
 BackendService recive a function and called when the response status it's 401
 ```javascript

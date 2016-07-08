@@ -93,12 +93,6 @@ BackendService._gererateFunctionStub_ = function(name){
     }
   }
 }
-//create other function in the function
-// var fnc = () => "Hola"
-// fnc.hola = () => "Hola again"
-// mutate function
-// var fnc = () => "Hola"
-// fnc.mutate = () => { fnc = () => "aloH" }
 
 var getRoutes = () => {
   if($routesPath){return require($routesPath)}
